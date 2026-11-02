@@ -2,8 +2,8 @@ package daiku.app.annotation;
 
 import daiku.app.validation.StepCreateDateValidation;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 /**

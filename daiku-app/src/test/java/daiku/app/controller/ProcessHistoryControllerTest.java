@@ -1,8 +1,7 @@
 package daiku.app.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import daiku.app.controller.input.processHistory.ProcessHistoryCreateParam;
 import daiku.app.controller.input.processHistory.ProcessHistoryUpdateCommentParam;
 import daiku.app.controller.input.processHistory.ProcessHistoryUpdateStatusParam;
@@ -18,10 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -314,8 +311,8 @@ public class ProcessHistoryControllerTest extends ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        Type collectionType = new TypeToken<Collection<ProcessHistorySearchModel>>(){}.getType();
-        List<ProcessHistorySearchModel> dto = new Gson().fromJson(resBodyAsString, collectionType);
+        List<ProcessHistorySearchModel> dto = objectMapper.readValue(
+                resBodyAsString, new TypeReference<List<ProcessHistorySearchModel>>() {});
 
         // 10件以上
         assertTrue(dto.size() > 0);

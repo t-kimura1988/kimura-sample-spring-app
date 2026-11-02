@@ -19,7 +19,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -36,13 +36,13 @@ public class ProcessHistoryServiceTest {
     @Autowired
     private ProcessHistoryService processHistoryService;
 
-    @SpyBean
+    @MockitoSpyBean
     private ProcessRepository processRepository;
 
-    @SpyBean
+    @MockitoSpyBean
     private GoalRepository goalRepository;
 
-    @SpyBean
+    @MockitoSpyBean
     private ProcessHistoryRepository processHistoryRepository;
 
     @Mock

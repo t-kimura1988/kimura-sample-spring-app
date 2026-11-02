@@ -1,13 +1,11 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.4'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.boot' version '4.1.2'
+	id 'io.spring.dependency-management' version '1.1.7'
 	id 'java'
 }
 
 group = 'com.goen'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -19,12 +17,12 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-batch'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.batch:spring-batch-test'
+	implementation 'org.springframework.boot:spring-boot-starter-batch-jdbc'
+	testImplementation 'org.springframework.boot:spring-boot-starter-batch-jdbc-test'
 	implementation project(":daiku-domain")
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	failOnNoDiscoveredTests = false
 }

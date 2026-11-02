@@ -1,9 +1,7 @@
 package daiku.app.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import daiku.app.controller.input.goal.GoalArchiveCreateParam;
 import daiku.app.controller.input.goal.GoalArchiveUpdatingFlgParameter;
 import daiku.app.controller.input.goal.GoalCreateParam;
@@ -21,10 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -180,8 +176,8 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        Type collectionType = new TypeToken<Collection<GoalSearchModel>>(){}.getType();
-        List<GoalSearchModel> dto = new Gson().fromJson(resBodyAsString, collectionType);
+        List<GoalSearchModel> dto = objectMapper.readValue(
+                resBodyAsString, new TypeReference<List<GoalSearchModel>>() {});
 
         // 10件であること
         assertEquals(10, dto.size());
@@ -265,7 +261,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andReturn();
 
         var resBodyAsString = res.getResponse().getContentAsString();
-        GoalSearchModel dto = new Gson().fromJson(resBodyAsString, GoalSearchModel.class);
+        GoalSearchModel dto = objectMapper.readValue(resBodyAsString, GoalSearchModel.class);
 
         // goalIdは1のデータが返却される想定
         assertEquals(1L, dto.getId());
@@ -451,9 +447,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andReturn();
 
         var resBodyAsString = res.getResponse().getContentAsString();
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd").create();
-        TGoalArchive dto = gson.fromJson(resBodyAsString, TGoalArchive.class);
+        TGoalArchive dto = objectMapper.readValue(resBodyAsString, TGoalArchive.class);
         assertNotNull(dto);
     }
 
@@ -499,9 +493,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd").create();
-        TGoalArchive dto = gson.fromJson(resBodyAsString, TGoalArchive.class);
+        TGoalArchive dto = objectMapper.readValue(resBodyAsString, TGoalArchive.class);
         assertNotNull(dto);
 
     }
@@ -598,9 +590,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andReturn();
 
         var resBodyAsString = res.getResponse().getContentAsString();
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd").create();
-        TGoalArchive dto = gson.fromJson(resBodyAsString, TGoalArchive.class);
+        TGoalArchive dto = objectMapper.readValue(resBodyAsString, TGoalArchive.class);
         assertNotNull(dto);
     }
 
@@ -650,8 +640,8 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        Type collectionType = new TypeToken<Collection<GoalSearchModel>>(){}.getType();
-        List<GoalSearchModel> dto = new Gson().fromJson(resBodyAsString, collectionType);
+        List<GoalSearchModel> dto = objectMapper.readValue(
+                resBodyAsString, new TypeReference<List<GoalSearchModel>>() {});
 
         // 10件であること
         assertEquals(10, dto.size());
@@ -702,8 +692,8 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        Type collectionType = new TypeToken<Collection<GoalSearchModel>>(){}.getType();
-        List<GoalSearchModel> dto = new Gson().fromJson(resBodyAsString, collectionType);
+        List<GoalSearchModel> dto = objectMapper.readValue(
+                resBodyAsString, new TypeReference<List<GoalSearchModel>>() {});
 
         // 10件以上
         assertTrue(dto.size() > 10);
@@ -758,7 +748,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        GoalArchiveDetailResponse dto = new Gson().fromJson(resBodyAsString, GoalArchiveDetailResponse.class);
+        GoalArchiveDetailResponse dto = objectMapper.readValue(resBodyAsString, GoalArchiveDetailResponse.class);
         assertNotNull(dto);
 
 
@@ -812,7 +802,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        GoalArchiveDetailResponse dto = new Gson().fromJson(resBodyAsString, GoalArchiveDetailResponse.class);
+        GoalArchiveDetailResponse dto = objectMapper.readValue(resBodyAsString, GoalArchiveDetailResponse.class);
         assertNotNull(dto);
 
 
@@ -866,7 +856,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        GoalArchiveDetailResponse dto = new Gson().fromJson(resBodyAsString, GoalArchiveDetailResponse.class);
+        GoalArchiveDetailResponse dto = objectMapper.readValue(resBodyAsString, GoalArchiveDetailResponse.class);
         assertNotNull(dto);
 
 
@@ -952,9 +942,7 @@ public class GoalControllerTest extends  ControllerBaseTest{
                 .andReturn();
 
         var resBodyAsString = res.getResponse().getContentAsString();
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd").create();
-        GoalSearchModel dto = gson.fromJson(resBodyAsString, GoalSearchModel.class);
+        GoalSearchModel dto = objectMapper.readValue(resBodyAsString, GoalSearchModel.class);
         assertNotNull(dto);
     }
 }

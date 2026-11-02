@@ -1,27 +1,31 @@
 package daiku.app.config;
 
-import daiku.app.security.GoenAuthenticationEntryPoint;
-import daiku.app.security.OAuth2Filter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
+import daiku.app.security.GoenAuthenticationEntryPoint;
+import daiku.app.security.OAuth2Filter;
+
+@Configuration
 @EnableWebSecurity
-public class CustomWebSecurity extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private OAuth2Filter oAuth2Filter;
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeRequests()
-                .antMatchers("/actuator/**").permitAll().anyRequest().authenticated()
-                .and()
-                .oauth2ResourceServer()
+public class CustomWebSecurity {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, OAuth2Filter oAuth2Filter) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/actuator/**").permitAll()
+                .anyRequest().authenticated());
+        http.oauth2ResourceServer(oauth2 -> oauth2
                 .authenticationEntryPoint(new GoenAuthenticationEntryPoint())
-                .jwt();
+                .jwt(Customizer.withDefaults()));
 
         http.addFilterAfter(oAuth2Filter, SwitchUserFilter.class);
+        return http.build();
     }
 }

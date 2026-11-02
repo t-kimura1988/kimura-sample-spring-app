@@ -1,19 +1,22 @@
 package daiku.app.advice;
 
-import com.google.firebase.auth.FirebaseAuthException;
-import daiku.domain.exception.GoenBadRequestException;
-import daiku.domain.exception.GoenIntegrityException;
-import daiku.domain.exception.GoenNotFoundException;
-import daiku.domain.entity.ErrorResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.google.firebase.auth.FirebaseAuthException;
+
+import daiku.domain.entity.ErrorResponse;
+import daiku.domain.exception.GoenBadRequestException;
+import daiku.domain.exception.GoenIntegrityException;
+import daiku.domain.exception.GoenNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
@@ -80,7 +83,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         return super.handleExceptionInternal(
                 e,
                 ErrorResponse.builder()

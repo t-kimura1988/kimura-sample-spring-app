@@ -4,7 +4,7 @@ import daiku.app.service.input.goal.GoalSearchServiceInput;
 import lombok.Builder;
 import lombok.Value;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
 import java.time.YearMonth;
 

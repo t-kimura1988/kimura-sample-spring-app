@@ -1,8 +1,7 @@
 package daiku.app.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import daiku.app.controller.input.process.ProcessCreateParam;
 import daiku.app.controller.input.process.ProcessDateUpdateParam;
 import daiku.domain.enums.ProcessPriority;
@@ -18,10 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -267,8 +264,8 @@ public class ProcessControllerTest extends ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        Type collectionType = new TypeToken<Collection<GoalSearchModel>>(){}.getType();
-        List<GoalSearchModel> dto = new Gson().fromJson(resBodyAsString, collectionType);
+        List<GoalSearchModel> dto = objectMapper.readValue(
+                resBodyAsString, new TypeReference<List<GoalSearchModel>>() {});
 
         // 10件以上
         assertTrue(dto.size() > 10);
@@ -410,7 +407,7 @@ public class ProcessControllerTest extends ControllerBaseTest{
                 .andExpect(status().isOk())
                 .andReturn();
         var resBodyAsString = res.getResponse().getContentAsString();
-        ProcessSearchModel dto = new Gson().fromJson(resBodyAsString, ProcessSearchModel.class);
+        ProcessSearchModel dto = objectMapper.readValue(resBodyAsString, ProcessSearchModel.class);
 
         assertNotNull(dto);
 

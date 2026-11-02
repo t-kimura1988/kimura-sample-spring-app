@@ -1,26 +1,12 @@
-buildscript {
-	repositories {
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath "gradle.plugin.org.seasar.doma:compile:1.1.1-beta1"
-	}
-}
-
 plugins {
-	id 'org.springframework.boot' version '2.6.3'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.boot' version '4.1.2'
+	id 'io.spring.dependency-management' version '1.1.7'
 	id 'java'
-
-	id "org.seasar.doma.compile" version "1.1.1-beta1"
+	id "org.domaframework.doma.compile" version "4.0.4"
 }
 
 group = 'com.goen'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-ext.domaResourcesDir = "${buildDir}/tmp/doma-resources"
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -38,4 +24,5 @@ tasks.named('test') {
 dependencies {
 
     implementation project(":daiku-domain")
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }

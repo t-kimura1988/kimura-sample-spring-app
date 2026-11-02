@@ -1,49 +1,57 @@
 package daiku.batch.config;
 
 import daiku.batch.tasklet.BusinessDataAsyncToFirebaseTasklet;
-import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
+import org.springframework.batch.core.job.parameters.RunIdIncrementer;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 public class FirebaseAsyncBatchConfig {
 
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
+    private final BusinessDataAsyncToFirebaseTasklet tasklet;
+    private final JobOperator jobOperator;
+    private final JobRepository jobRepository;
+    private final PlatformTransactionManager transactionManager;
 
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
+    public FirebaseAsyncBatchConfig(
+            BusinessDataAsyncToFirebaseTasklet tasklet,
+            JobOperator jobOperator,
+            JobRepository jobRepository,
+            PlatformTransactionManager transactionManager) {
+        this.tasklet = tasklet;
+        this.jobOperator = jobOperator;
+        this.jobRepository = jobRepository;
+        this.transactionManager = transactionManager;
+    }
 
-    @Autowired
-    private BusinessDataAsyncToFirebaseTasklet tasklet1;
-
-    @Autowired
-    private JobLauncher jobLauncher;
     @Scheduled(cron = "0 0 0 * * *")
     public void testTask() throws Exception {
         JobParameters params = new JobParametersBuilder()
                 .addString("businessDataAsyncFirebaseJob", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
 
-        JobExecution exe = jobLauncher.run(firebaseAsyncJob(), params);
-
+        jobOperator.run(firebaseAsyncJob(), params);
     }
 
     public Job firebaseAsyncJob() {
-        return jobBuilderFactory.get("businessDataAsyncFirebaseJob")
+        return new JobBuilder("businessDataAsyncFirebaseJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(step1())
                 .build();
     }
 
     public Step step1() {
-        return stepBuilderFactory.get("step1")
-                .tasklet(tasklet1)
+        return new StepBuilder("step1", jobRepository)
+                .tasklet(tasklet, transactionManager)
                 .build();
     }
 }

@@ -1,6 +1,6 @@
 package daiku.app.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import daiku.app.controller.input.goalFavorite.GoalFavoriteCreateParam;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -4,7 +4,7 @@ import daiku.app.service.input.idea.IdeaDetailServiceInput;
 import lombok.Builder;
 import lombok.Value;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Builder
 @Value

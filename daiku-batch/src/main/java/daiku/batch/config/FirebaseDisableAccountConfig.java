@@ -2,52 +2,60 @@ package daiku.batch.config;
 
 import daiku.batch.tasklet.BusinessDataAsyncToFirebaseTasklet;
 import daiku.batch.tasklet.FirebaseDisableAccountTasklet;
-import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
+import org.springframework.batch.core.job.parameters.RunIdIncrementer;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 public class FirebaseDisableAccountConfig {
 
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
+    private final FirebaseDisableAccountTasklet firebaseAccountDeleteTasklet;
+    private final BusinessDataAsyncToFirebaseTasklet businessDataAsyncToFirebaseTasklet;
+    private final JobOperator jobOperator;
+    private final JobRepository jobRepository;
+    private final PlatformTransactionManager transactionManager;
 
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
+    public FirebaseDisableAccountConfig(
+            FirebaseDisableAccountTasklet firebaseAccountDeleteTasklet,
+            BusinessDataAsyncToFirebaseTasklet businessDataAsyncToFirebaseTasklet,
+            JobOperator jobOperator,
+            JobRepository jobRepository,
+            PlatformTransactionManager transactionManager) {
+        this.firebaseAccountDeleteTasklet = firebaseAccountDeleteTasklet;
+        this.businessDataAsyncToFirebaseTasklet = businessDataAsyncToFirebaseTasklet;
+        this.jobOperator = jobOperator;
+        this.jobRepository = jobRepository;
+        this.transactionManager = transactionManager;
+    }
 
-    @Autowired
-    private FirebaseDisableAccountTasklet firebaseAccountDeleteTasklet;
-
-    @Autowired
-    private BusinessDataAsyncToFirebaseTasklet businessDataAsyncToFirebaseTasklet;
-
-    @Autowired
-    private JobLauncher jobLauncher;
     @Scheduled(cron = "0 0 0 * * *")
     public void testTask() throws Exception {
         JobParameters params = new JobParametersBuilder()
                 .addString("firebaseDisableAccountJob", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
 
-        JobExecution exe = jobLauncher.run(firebaseDisableJob(), params);
-
+        jobOperator.run(firebaseDisableJob(), params);
     }
 
     public Job firebaseDisableJob() {
-        return jobBuilderFactory.get("firebaseDisableAccountJob")
+        return new JobBuilder("firebaseDisableAccountJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(step1())
                 .build();
     }
 
     public Step step1() {
-        return stepBuilderFactory.get("step1")
-                .tasklet(firebaseAccountDeleteTasklet)
+        return new StepBuilder("step1", jobRepository)
+                .tasklet(firebaseAccountDeleteTasklet, transactionManager)
                 .build();
     }
 }

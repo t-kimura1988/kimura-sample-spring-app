@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -33,10 +33,10 @@ public class GoalFavoriteServiceTest {
     @InjectMocks
     private GoalFavoriteService goalFavoriteService;
 
-    @SpyBean
+    @MockitoSpyBean
     private GoalRepository goalRepository;
 
-    @SpyBean
+    @MockitoSpyBean
     private GoalFavoriteRepository goalFavoriteRepository;
 
     @Test
