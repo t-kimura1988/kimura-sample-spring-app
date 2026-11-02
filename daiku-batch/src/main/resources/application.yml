@@ -1,0 +1,30 @@
+spring:
+  main:
+    web-application-type: none
+  batch:
+    jdbc:
+      initialize-schema: always
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 30000
+      minimum-idle: 2
+      maximum-pool-size: 100
+      connection-test-query: SELECT 1
+      connection-init-sql: SELECT 1
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+firebase:
+  credentials:
+    type: ${FIREBASE_TYPE}
+    projectId: ${FIREBASE_PROJECT_ID}
+    privateKeyId: ${FIREBASE_PRIVATE_KEY_ID}
+    privateKey: ${FIREBASE_PRIVATE_KEY}
+    clientEmail: ${FIREBASE_CLIENT_EMAIL}
+    clientId: ${FIREBASE_CLIENT_ID}
+    clientX509CertUrl: ${FIREBASE_CLIENT_X509_CER_URL}

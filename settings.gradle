@@ -1,0 +1,6 @@
+rootProject.name = 'molti-daiku'
+
+include ':daiku-app'
+include ':daiku-domain'
+include ':daiku-batch'
+

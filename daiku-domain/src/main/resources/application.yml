@@ -1,0 +1,25 @@
+doma:
+  dialect: POSTGRES
+  sql-file-reposiotry: GREEDY_CACHE
+  naming: SNAKE_UPPER_CASE
+  max-rows: 1000
+  exception-sql-log-type: FORMATTED
+
+---
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+#  firebase:
+#    credential:
+#      path: ${GOOGLE_APPLICATION_CREDENTIALS}
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://securetoken.google.com/${FIREBASE_PROJECT_ID}
+          jwk-set-uri: https://www.googleapis.com/robot/v1/metadata/jwk/securetoken@system.gserviceaccount.com

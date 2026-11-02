@@ -1,0 +1,4 @@
+error:
+  argument:
+    future_from_now: "日付は未来日を設定してください。"
+    step_create_date_is_today: "日付は本日の日付を設定してください。"
